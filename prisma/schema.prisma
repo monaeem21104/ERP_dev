@@ -1,6 +1,6 @@
-// prisma/schema.prisma
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
 }
 
 datasource db {
@@ -8,7 +8,7 @@ datasource db {
 }
 
 // ======================
-//  CORE & TENANCY
+// CORE & TENANCY
 // ======================
 
 model Organization {
@@ -59,7 +59,7 @@ enum MembershipRole {
 }
 
 // ======================
-//  USER & ROLE MANAGEMENT (RBAC)
+// USER & ROLE MANAGEMENT (RBAC)
 // ======================
 
 model User {
@@ -83,7 +83,7 @@ model User {
 
 model Role {
   id          String   @id @default(uuid())
-  name        String   @unique @db.VarChar(100)   // e.g. "Finance Manager"
+  name        String   @unique @db.VarChar(100)
   description String?  @db.Text
   isSystem    Boolean  @default(false)
 
@@ -97,8 +97,8 @@ model Role {
 
 model Permission {
   id          String   @id @default(uuid())
-  resource    String   @db.VarChar(100)   // Product, Employee, Invoice etc.
-  action      String   @db.VarChar(50)    // create, read, update, delete, approve
+  resource    String   @db.VarChar(100)
+  action      String   @db.VarChar(50)
   description String?  @db.Text
 
   roles       RolePermission[]
@@ -119,32 +119,32 @@ model RolePermission {
 }
 
 // ======================
-//  HR MODULE
+// HR MODULE
 // ======================
 
 model Employee {
-  id              String          @id @default(uuid())
-  userId          String?         @unique
-  employeeCode    String          @unique @db.VarChar(50)
-  firstName       String          @db.VarChar(100)
-  lastName        String          @db.VarChar(100)
-  email           String          @unique @db.VarChar(191)
-  phone           String?         @db.VarChar(20)
+  id              String         @id @default(uuid())
+  userId          String?        @unique
+  employeeCode    String         @unique @db.VarChar(50)
+  firstName       String         @db.VarChar(100)
+  lastName        String         @db.VarChar(100)
+  email           String         @unique @db.VarChar(191)
+  phone           String?        @db.VarChar(20)
   dateOfBirth     DateTime?
-  gender          String?         @db.VarChar(20)
-  department      String          @db.VarChar(100)
-  designation     String          @db.VarChar(100)
-  joinedAt        DateTime        @default(now())
+  gender          String?        @db.VarChar(20)
+  department      String         @db.VarChar(100)
+  designation     String         @db.VarChar(100)
+  joinedAt        DateTime       @default(now())
   leftAt          DateTime?
   salary          Float?
-  status          EmployeeStatus  @default(ACTIVE)
+  status          EmployeeStatus @default(ACTIVE)
 
-  user            User?           @relation(fields: [userId], references: [id])
+  user            User?          @relation(fields: [userId], references: [id])
   organizationId  String
-  organization    Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization    Organization   @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
 
   @@map("employees")
 }
@@ -157,7 +157,7 @@ enum EmployeeStatus {
 }
 
 // ======================
-//  INVENTORY MODULE
+// INVENTORY MODULE
 // ======================
 
 model Product {
@@ -231,7 +231,7 @@ model WarehouseStock {
 }
 
 // ======================
-//  BASIC CRM
+// BASIC CRM
 // ======================
 
 model Customer {
@@ -268,7 +268,7 @@ model Supplier {
 }
 
 // ======================
-//  AUDIT LOG
+// AUDIT LOG
 // ======================
 
 model AuditLog {
